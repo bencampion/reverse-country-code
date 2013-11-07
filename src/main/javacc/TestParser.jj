@@ -1,0 +1,86 @@
+options {
+    STATIC = false;
+    IGNORE_CASE = true;
+}
+
+PARSER_BEGIN( WktParser )
+    package com.github.countrycode.reverse;
+
+    import java.util.ArrayList;
+    import java.util.List;
+
+    class WktParser {
+    }
+PARSER_END( WktParser )
+
+SKIP: { " " | "\t" | "\n" | "\r" }
+TOKEN: { < REAL: ("-")? (["0"-"9"])+ ("." (["0"-"9"])*)? > }
+
+Geometry parse(String id):
+{
+    Geometry geo;
+}
+{
+    ( "MULTIPOLYGON" geo = multiPolygon(id) | "POLYGON" geo = polygon(id) )
+    <EOF>
+    {
+        return geo;
+    }
+}
+
+MultiPolygon multiPolygon(String id):
+{
+    List<Polygon> polys = new ArrayList<Polygon>();
+}
+{
+    "(" { polys.add(polygon(id)); } ( "," { polys.add(polygon(id)); } )* ")"
+    {
+        return new MultiPolygon(id, polys);
+    }
+}
+
+Polygon polygon(String id):
+{
+    List<double[]> ring;
+    List<Polygon> holes = new ArrayList<Polygon>();
+}
+{
+    "(" ring = ring() ( "," { holes.add(new Polygon(id, ring())); } )* ")"
+    {
+        return new Polygon(id, ring, holes);
+    }
+}
+
+List<double[]> ring():
+{
+    List<double[]> coordinates = new ArrayList<double[]>();
+}
+{
+    "(" point(coordinates) ( "," point(coordinates) )* ")"
+    {
+        return coordinates;
+    }
+}
+
+void point(List<double[]> coordinates):
+{
+    Double x, y;
+}
+{
+    x = real() y = real()
+    {
+        double[] c = { x, y };
+        coordinates.add(c);
+    }
+}
+
+Double real():
+{
+    Token t;
+}
+{
+    t = <REAL>
+    {
+        return Double.valueOf(t.image);
+    }
+}

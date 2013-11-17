@@ -13,8 +13,8 @@ class Polygon implements Geometry {
     private final List<Polygon> holes;
     private double north = Double.NEGATIVE_INFINITY;
     private double south = Double.POSITIVE_INFINITY;
-    private double east = Double.POSITIVE_INFINITY;
-    private double west = Double.NEGATIVE_INFINITY;
+    private double east = Double.NEGATIVE_INFINITY;
+    private double west = Double.POSITIVE_INFINITY;
 
     public Polygon(String id, List<double[]> ring) {
         this(id, ring, Collections.<Polygon> emptyList());
@@ -31,8 +31,8 @@ class Polygon implements Geometry {
             lonitude[i] = x;
             north = Math.max(y, north);
             south = Math.min(y, south);
-            east = Math.min(x, east);
-            west = Math.max(x, west);
+            east = Math.max(x, east);
+            west = Math.min(x, west);
         }
         this.holes = new ArrayList<Polygon>(holes);
     }
@@ -48,7 +48,7 @@ class Polygon implements Geometry {
     }
 
     private boolean inBox(double lat, double lon) {
-        return lat <= north && lat >= south && lon >= east && lon <= west;
+        return lat <= north && lat >= south && lon <= east && lon >= west;
     }
 
     private boolean inHoles(double lat, double lon) {

@@ -10,8 +10,8 @@ class MultiPolygon implements Geometry {
     private final List<Polygon> polygons;
     private double north = Double.NEGATIVE_INFINITY;
     private double south = Double.POSITIVE_INFINITY;
-    private double east = Double.POSITIVE_INFINITY;
-    private double west = Double.NEGATIVE_INFINITY;
+    private double east = Double.NEGATIVE_INFINITY;
+    private double west = Double.POSITIVE_INFINITY;
 
     public MultiPolygon(String id, Collection<Polygon> polygons) {
         this.id = id;
@@ -20,8 +20,8 @@ class MultiPolygon implements Geometry {
             this.polygons.add(p);
             north = Math.max(p.getNorth(), north);
             south = Math.min(p.getSouth(), south);
-            east = Math.min(p.getEast(), east);
-            west = Math.max(p.getWest(), west);
+            east = Math.max(p.getEast(), east);
+            west = Math.min(p.getWest(), west);
         }
     }
 
@@ -36,7 +36,7 @@ class MultiPolygon implements Geometry {
     }
 
     private boolean inBox(double lat, double lon) {
-        return lat <= north && lat >= south && lon >= east && lon <= west;
+        return lat <= north && lat >= south && lon <= east && lon >= west;
     }
 
     private boolean inPolys(double lat, double lon) {

@@ -3,6 +3,10 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github</groupId>
   <version>0.0.1-SNAPSHOT</version>
+  <artifactId>reverse-country-code</artifactId>
+  <name>reverse-country-code</name>
+  <url>https://github.com/bencampion/reverse-country-code</url>
+  <description>Library for finding the two letter ISO country code (ISO 3166-1 alpha-2) for any given point in degrees latitude and longitude.</description>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
@@ -46,5 +50,4 @@
       </plugin>
     </plugins>
   </build>
-  <artifactId>reverse-country-code</artifactId>
 </project>

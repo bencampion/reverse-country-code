@@ -7,18 +7,16 @@ import java.util.List;
 
 class Polygon implements Geometry {
 
-    private final String id;
     private final double[] latitude;
     private final double[] lonitude;
     private final List<Polygon> holes;
     private final BoundingBox boundingBox;
 
     public Polygon(List<Point> ring) {
-        this(null, ring, Collections.<Polygon> emptyList());
+        this(ring, Collections.<Polygon> emptyList());
     }
 
-    public Polygon(String id, List<Point> ring, Collection<Polygon> holes) {
-        this.id = id;
+    public Polygon(List<Point> ring, Collection<Polygon> holes) {
         int n = ring.size();
         latitude = new double[n];
         lonitude = new double[n];
@@ -32,11 +30,6 @@ class Polygon implements Geometry {
         }
         boundingBox = builder.build();
         this.holes = new ArrayList<Polygon>(holes);
-    }
-
-    @Override
-    public String getId() {
-        return id;
     }
 
     @Override

@@ -16,30 +16,30 @@ PARSER_END( WktParser )
 SKIP: { " " | "\t" | "\n" | "\r" }
 TOKEN: { < REAL: ("-")? (["0"-"9"])+ ("." (["0"-"9"])*)? > }
 
-Geometry parse(String id):
+Geometry parse():
 {
     Geometry geo;
 }
 {
-    ( "MULTIPOLYGON" geo = multiPolygon(id) | "POLYGON" geo = polygon(id) )
+    ( "MULTIPOLYGON" geo = multiPolygon() | "POLYGON" geo = polygon() )
     <EOF>
     {
         return geo;
     }
 }
 
-MultiPolygon multiPolygon(String id):
+MultiPolygon multiPolygon():
 {
     List<Polygon> polys = new ArrayList<Polygon>();
 }
 {
-    "(" { polys.add(polygon(id)); } ( "," { polys.add(polygon(id)); } )* ")"
+    "(" { polys.add(polygon()); } ( "," { polys.add(polygon()); } )* ")"
     {
-        return new MultiPolygon(id, polys);
+        return new MultiPolygon(polys);
     }
 }
 
-Polygon polygon(String id):
+Polygon polygon():
 {
     List<Point> ring;
     List<Polygon> holes = new ArrayList<Polygon>();
@@ -47,7 +47,7 @@ Polygon polygon(String id):
 {
     "(" ring = ring() ( "," { holes.add(new Polygon(ring())); } )* ")"
     {
-        return new Polygon(id, ring, holes);
+        return new Polygon(ring, holes);
     }
 }
 
@@ -56,20 +56,20 @@ List<Point> ring():
     List<Point> coordinates = new ArrayList<Point>();
 }
 {
-    "(" point(coordinates) ( "," point(coordinates) )* ")"
+    "(" { coordinates.add(point()); } ( "," { coordinates.add(point()); } )* ")"
     {
         return coordinates;
     }
 }
 
-void point(List<Point> coordinates):
+Point point():
 {
     Double lat, lon;
 }
 {
     lon = real() lat = real()
     {
-        coordinates.add(new Point(lat, lon));
+        return new Point(lat, lon);
     }
 }
 

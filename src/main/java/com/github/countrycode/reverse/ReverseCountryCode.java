@@ -15,7 +15,7 @@ public class ReverseCountryCode {
 
     private static final String PROPERTIES_FILE = "/polygons.properties";
 
-    private final List<Geometry> geometries = new ArrayList<Geometry>();
+    private final List<Country> countries = new ArrayList<Country>();
 
     /**
      * Creates a new reverse country code object. This is an expensive operation
@@ -45,10 +45,11 @@ public class ReverseCountryCode {
 
     private void load(Properties polys) {
         try {
-            for (String id : polys.stringPropertyNames()) {
-                String wkt = polys.getProperty(id);
+            for (String code : polys.stringPropertyNames()) {
+                String wkt = polys.getProperty(code);
                 WktParser parser = new WktParser(new StringReader(wkt));
-                geometries.add(parser.parse(id));
+                Geometry geometry = parser.parse();
+                countries.add(new Country(code, geometry));
             }
         } catch (TokenMgrError e) {
             throw new IllegalArgumentException(e);
@@ -68,9 +69,9 @@ public class ReverseCountryCode {
      *         country
      */
     public String getCountryCode(double lat, double lon) {
-        for (Geometry g : geometries) {
-            if (g.contains(lat, lon)) {
-                return g.getId();
+        for (Country c : countries) {
+            if (c.contains(lat, lon)) {
+                return c.getCode();
             }
         }
         return null;

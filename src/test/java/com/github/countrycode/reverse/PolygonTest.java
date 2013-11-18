@@ -1,6 +1,5 @@
 package com.github.countrycode.reverse;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -11,19 +10,13 @@ import org.junit.Test;
 
 public class PolygonTest {
 
-    private static final String ID = "test";
     private Geometry polygon;
 
     @Before
     public void setup() throws ParseException {
         String wkt = "POLYGON ((3.5 1, 1 2, 1.5 4, 4.5 4.5, 3.5 1), (2 3, 3.5 3.5, 3 2, 2 3))";
         WktParser parser = new WktParser(new StringReader(wkt));
-        polygon = parser.parse(ID);
-    }
-
-    @Test
-    public void id() {
-        assertEquals(ID, polygon.getId());
+        polygon = parser.parse();
     }
 
     @Test

@@ -6,23 +6,16 @@ import java.util.List;
 
 class MultiPolygon implements Geometry {
 
-    private final String id;
     private final List<Polygon> polygons;
     private final BoundingBox boundingBox;
 
-    public MultiPolygon(String id, Collection<Polygon> polygons) {
-        this.id = id;
+    public MultiPolygon(Collection<Polygon> polygons) {
         this.polygons = new ArrayList<Polygon>(polygons);
         BoundingBox.Builder builder = new BoundingBox.Builder();
         for (Polygon p : polygons) {
             builder.addBox(p.getBoundingBox());
         }
         boundingBox = builder.build();
-    }
-
-    @Override
-    public String getId() {
-        return id;
     }
 
     @Override

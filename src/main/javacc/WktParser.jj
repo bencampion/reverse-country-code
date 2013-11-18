@@ -41,19 +41,19 @@ MultiPolygon multiPolygon(String id):
 
 Polygon polygon(String id):
 {
-    List<double[]> ring;
+    List<Point> ring;
     List<Polygon> holes = new ArrayList<Polygon>();
 }
 {
-    "(" ring = ring() ( "," { holes.add(new Polygon(id, ring())); } )* ")"
+    "(" ring = ring() ( "," { holes.add(new Polygon(ring())); } )* ")"
     {
         return new Polygon(id, ring, holes);
     }
 }
 
-List<double[]> ring():
+List<Point> ring():
 {
-    List<double[]> coordinates = new ArrayList<double[]>();
+    List<Point> coordinates = new ArrayList<Point>();
 }
 {
     "(" point(coordinates) ( "," point(coordinates) )* ")"
@@ -62,15 +62,14 @@ List<double[]> ring():
     }
 }
 
-void point(List<double[]> coordinates):
+void point(List<Point> coordinates):
 {
-    Double x, y;
+    Double lat, lon;
 }
 {
-    x = real() y = real()
+    lon = real() lat = real()
     {
-        double[] c = { x, y };
-        coordinates.add(c);
+        coordinates.add(new Point(lat, lon));
     }
 }
 

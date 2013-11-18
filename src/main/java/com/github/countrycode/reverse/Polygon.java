@@ -11,29 +11,26 @@ class Polygon implements Geometry {
     private final double[] latitude;
     private final double[] lonitude;
     private final List<Polygon> holes;
-    private double north = Double.NEGATIVE_INFINITY;
-    private double south = Double.POSITIVE_INFINITY;
-    private double east = Double.NEGATIVE_INFINITY;
-    private double west = Double.POSITIVE_INFINITY;
+    private final BoundingBox boundingBox;
 
-    public Polygon(String id, List<double[]> ring) {
-        this(id, ring, Collections.<Polygon> emptyList());
+    public Polygon(List<Point> ring) {
+        this(null, ring, Collections.<Polygon> emptyList());
     }
 
-    public Polygon(String id, List<double[]> ring, Collection<Polygon> holes) {
+    public Polygon(String id, List<Point> ring, Collection<Polygon> holes) {
         this.id = id;
         int n = ring.size();
         latitude = new double[n];
         lonitude = new double[n];
+        BoundingBox.Builder builder = new BoundingBox.Builder();
         for (int i = 0; i < n; i++) {
-            double x = ring.get(i)[0], y = ring.get(i)[1];
-            latitude[i] = y;
-            lonitude[i] = x;
-            north = Math.max(y, north);
-            south = Math.min(y, south);
-            east = Math.max(x, east);
-            west = Math.min(x, west);
+            double lat = ring.get(i).getLatitude();
+            double lon = ring.get(i).getLongitude();
+            latitude[i] = lat;
+            lonitude[i] = lon;
+            builder.addPoint(ring.get(i));
         }
+        boundingBox = builder.build();
         this.holes = new ArrayList<Polygon>(holes);
     }
 
@@ -44,11 +41,8 @@ class Polygon implements Geometry {
 
     @Override
     public boolean contains(double lat, double lon) {
-        return inBox(lat, lon) && inPoly(lat, lon) && !inHoles(lat, lon);
-    }
-
-    private boolean inBox(double lat, double lon) {
-        return lat <= north && lat >= south && lon <= east && lon >= west;
+        return boundingBox.contains(lat, lon) && inPoly(lat, lon)
+                && !inHoles(lat, lon);
     }
 
     private boolean inHoles(double lat, double lon) {
@@ -72,20 +66,8 @@ class Polygon implements Geometry {
         return contains;
     }
 
-    public double getNorth() {
-        return north;
-    }
-
-    public double getSouth() {
-        return south;
-    }
-
-    public double getEast() {
-        return east;
-    }
-
-    public double getWest() {
-        return west;
+    public BoundingBox getBoundingBox() {
+        return boundingBox;
     }
 
 }

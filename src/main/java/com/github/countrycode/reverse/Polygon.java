@@ -8,7 +8,7 @@ import java.util.List;
 class Polygon implements Geometry {
 
     private final double[] latitude;
-    private final double[] lonitude;
+    private final double[] longitude;
     private final List<Polygon> holes;
     private final BoundingBox boundingBox;
 
@@ -17,19 +17,27 @@ class Polygon implements Geometry {
     }
 
     public Polygon(List<Point> ring, Collection<Polygon> holes) {
-        int n = ring.size();
-        latitude = new double[n];
-        lonitude = new double[n];
-        BoundingBox.Builder builder = new BoundingBox.Builder();
-        for (int i = 0; i < n; i++) {
-            double lat = ring.get(i).getLatitude();
-            double lon = ring.get(i).getLongitude();
-            latitude[i] = lat;
-            lonitude[i] = lon;
-            builder.addPoint(ring.get(i));
-        }
-        boundingBox = builder.build();
+        latitude = new double[ring.size()];
+        longitude = new double[ring.size()];
+        populateArrays(ring);
+        boundingBox = createBoundingBox(ring);
         this.holes = new ArrayList<Polygon>(holes);
+    }
+
+    private void populateArrays(List<Point> ring) {
+        for (int i = 0; i < ring.size(); i++) {
+            Point point = ring.get(i);
+            latitude[i] = point.getLatitude();
+            longitude[i] = point.getLongitude();
+        }
+    }
+
+    private BoundingBox createBoundingBox(List<Point> ring) {
+        BoundingBox.Builder builder = new BoundingBox.Builder();
+        for (Point point : ring) {
+            builder.addPoint(point);
+        }
+        return builder.build();
     }
 
     @Override
@@ -49,10 +57,11 @@ class Polygon implements Geometry {
 
     private boolean inPoly(double lat, double lon) {
         boolean contains = false;
-        for (int i = 0, j = lonitude.length - 1; i < lonitude.length; j = i++) {
+        for (int i = 0, j = longitude.length - 1; i < longitude.length; j = i++) {
             if (((latitude[i] > lat) != (latitude[j] > lat))
-                    && (lon < (lonitude[j] - lonitude[i]) * (lat - latitude[i])
-                            / (latitude[j] - latitude[i]) + lonitude[i])) {
+                    && (lon < (longitude[j] - longitude[i])
+                            * (lat - latitude[i]) / (latitude[j] - latitude[i])
+                            + longitude[i])) {
                 contains = !contains;
             }
         }

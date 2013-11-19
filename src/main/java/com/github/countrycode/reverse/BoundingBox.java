@@ -1,6 +1,6 @@
 package com.github.countrycode.reverse;
 
-class BoundingBox {
+class BoundingBox implements Geometry {
 
     private final double north;
     private final double south;
@@ -14,6 +14,7 @@ class BoundingBox {
         this.west = west;
     }
 
+    @Override
     public boolean contains(double lat, double lon) {
         return lat <= north && lat >= south && lon <= east && lon >= west;
     }

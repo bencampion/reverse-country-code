@@ -19,6 +19,11 @@ class BoundingBox implements Geometry {
         return lat <= north && lat >= south && lon <= east && lon >= west;
     }
 
+    @Override
+    public BoundingBox getBoundingBox() {
+        return this;
+    }
+
     public static class Builder {
 
         private double north = Double.NEGATIVE_INFINITY;
@@ -26,14 +31,19 @@ class BoundingBox implements Geometry {
         private double east = Double.NEGATIVE_INFINITY;
         private double west = Double.POSITIVE_INFINITY;
 
-        public Builder addPoint(Point point) {
-            addPoint(point.getLatitude(), point.getLongitude());
+        public Builder addPoints(Iterable<Point> points) {
+            for (Point point : points) {
+                addPoint(point.getLatitude(), point.getLongitude());
+            }
             return this;
         }
 
-        public Builder addBox(BoundingBox box) {
-            addPoint(box.north, box.east);
-            addPoint(box.south, box.west);
+        public Builder addGeometries(Iterable<? extends Geometry> geometries) {
+            for (Geometry geometry : geometries) {
+                BoundingBox box = geometry.getBoundingBox();
+                addPoint(box.north, box.east);
+                addPoint(box.south, box.west);
+            }
             return this;
         }
 

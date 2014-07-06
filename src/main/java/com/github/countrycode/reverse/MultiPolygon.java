@@ -11,16 +11,17 @@ class MultiPolygon implements Geometry {
 
     public MultiPolygon(Collection<Polygon> polygons) {
         this.polygons = new ArrayList<>(polygons);
-        BoundingBox.Builder builder = new BoundingBox.Builder();
-        for (Polygon p : polygons) {
-            builder.addBox(p.getBoundingBox());
-        }
-        boundingBox = builder.build();
+        boundingBox = new BoundingBox.Builder().addGeometries(polygons).build();
     }
 
     @Override
     public boolean contains(double lat, double lon) {
         return boundingBox.contains(lat, lon) && inPolys(lat, lon);
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return boundingBox;
     }
 
     private boolean inPolys(double lat, double lon) {

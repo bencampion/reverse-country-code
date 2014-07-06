@@ -20,7 +20,7 @@ class Polygon implements Geometry {
         latitude = new double[ring.size()];
         longitude = new double[ring.size()];
         populateArrays(ring);
-        boundingBox = createBoundingBox(ring);
+        boundingBox = new BoundingBox.Builder().addPoints(ring).build();
         this.holes = new ArrayList<>(holes);
     }
 
@@ -30,14 +30,6 @@ class Polygon implements Geometry {
             latitude[i] = point.getLatitude();
             longitude[i] = point.getLongitude();
         }
-    }
-
-    private BoundingBox createBoundingBox(List<Point> ring) {
-        BoundingBox.Builder builder = new BoundingBox.Builder();
-        for (Point point : ring) {
-            builder.addPoint(point);
-        }
-        return builder.build();
     }
 
     @Override
@@ -68,6 +60,7 @@ class Polygon implements Geometry {
         return contains;
     }
 
+    @Override
     public BoundingBox getBoundingBox() {
         return boundingBox;
     }

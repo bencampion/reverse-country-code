@@ -15,31 +15,19 @@ public class ReverseCountryCode {
 
     private static final String PROPERTIES_FILE = "/polygons.properties";
 
-    private final List<Country> countries = new ArrayList<Country>();
+    private final List<Country> countries = new ArrayList<>();
 
     /**
      * Creates a new reverse country code object. This is an expensive operation
      * as the country boundary data is parsed each time the class instantiated.
      */
     public ReverseCountryCode() {
-        this(ReverseCountryCode.class.getResourceAsStream(PROPERTIES_FILE));
-    }
-
-    private ReverseCountryCode(InputStream is) {
         Properties polys = new Properties();
-        try {
+        try (InputStream is = getClass().getResourceAsStream(PROPERTIES_FILE)) {
             polys.load(is);
             load(polys);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
         }
     }
 
@@ -51,9 +39,7 @@ public class ReverseCountryCode {
                 Geometry geometry = parser.parse();
                 countries.add(new Country(code, geometry));
             }
-        } catch (TokenMgrError e) {
-            throw new IllegalArgumentException(e);
-        } catch (ParseException e) {
+        } catch (TokenMgrError | ParseException e) {
             throw new IllegalArgumentException(e);
         }
     }

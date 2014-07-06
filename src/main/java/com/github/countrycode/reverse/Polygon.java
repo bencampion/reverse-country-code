@@ -21,7 +21,7 @@ class Polygon implements Geometry {
         longitude = new double[ring.size()];
         populateArrays(ring);
         boundingBox = createBoundingBox(ring);
-        this.holes = new ArrayList<Polygon>(holes);
+        this.holes = new ArrayList<>(holes);
     }
 
     private void populateArrays(List<Point> ring) {

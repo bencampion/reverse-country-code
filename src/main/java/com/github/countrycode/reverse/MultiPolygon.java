@@ -10,7 +10,7 @@ class MultiPolygon implements Geometry {
     private final BoundingBox boundingBox;
 
     public MultiPolygon(Collection<Polygon> polygons) {
-        this.polygons = new ArrayList<Polygon>(polygons);
+        this.polygons = new ArrayList<>(polygons);
         BoundingBox.Builder builder = new BoundingBox.Builder();
         for (Polygon p : polygons) {
             builder.addBox(p.getBoundingBox());

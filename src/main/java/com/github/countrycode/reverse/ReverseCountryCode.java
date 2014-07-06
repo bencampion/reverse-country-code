@@ -15,26 +15,32 @@ public class ReverseCountryCode {
 
     private static final String PROPERTIES_FILE = "/polygons.properties";
 
-    private final List<Country> countries = new ArrayList<>();
+    private final List<Country> countries;
 
     /**
      * Creates a new reverse country code object. This is an expensive operation
      * as the country boundary data is parsed each time the class instantiated.
      */
     public ReverseCountryCode() {
-        Properties polys = new Properties();
+        Properties properties = load();
+        countries = new ArrayList<>(properties.size());
+        parse(properties);
+    }
+
+    private Properties load() {
+        Properties properties = new Properties();
         try (InputStream is = getClass().getResourceAsStream(PROPERTIES_FILE)) {
-            polys.load(is);
-            load(polys);
+            properties.load(is);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        return properties;
     }
 
-    private void load(Properties polys) {
+    private void parse(Properties properties) {
         try {
-            for (String code : polys.stringPropertyNames()) {
-                String wkt = polys.getProperty(code);
+            for (String code : properties.stringPropertyNames()) {
+                String wkt = properties.getProperty(code);
                 WktParser parser = new WktParser(new StringReader(wkt));
                 Geometry geometry = parser.parse();
                 countries.add(new Country(code, geometry));
@@ -46,7 +52,7 @@ public class ReverseCountryCode {
 
     /**
      * Returns the ISO country code of any given point.
-     *
+     * 
      * @param lat
      *            degrees latitude
      * @param lon

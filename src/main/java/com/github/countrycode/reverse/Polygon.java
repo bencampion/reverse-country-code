@@ -7,8 +7,7 @@ import java.util.List;
 
 class Polygon implements Geometry {
 
-    private final double[] latitude;
-    private final double[] longitude;
+    private final List<Point> ring;
     private final List<Polygon> holes;
     private final BoundingBox boundingBox;
 
@@ -17,25 +16,20 @@ class Polygon implements Geometry {
     }
 
     public Polygon(List<Point> ring, Collection<Polygon> holes) {
-        latitude = new double[ring.size()];
-        longitude = new double[ring.size()];
-        populateArrays(ring);
-        boundingBox = new BoundingBox.Builder().addPoints(ring).build();
+        this.ring = new ArrayList<>(ring);
         this.holes = new ArrayList<>(holes);
-    }
-
-    private void populateArrays(List<Point> ring) {
-        for (int i = 0; i < ring.size(); i++) {
-            Point point = ring.get(i);
-            latitude[i] = point.getLatitude();
-            longitude[i] = point.getLongitude();
-        }
+        boundingBox = new BoundingBox.Builder().addPoints(ring).build();
     }
 
     @Override
     public boolean contains(double lat, double lon) {
         return boundingBox.contains(lat, lon) && inPoly(lat, lon)
                 && !inHoles(lat, lon);
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return boundingBox;
     }
 
     private boolean inHoles(double lat, double lon) {
@@ -49,20 +43,18 @@ class Polygon implements Geometry {
 
     private boolean inPoly(double lat, double lon) {
         boolean contains = false;
-        for (int i = 0, j = longitude.length - 1; i < longitude.length; j = i++) {
-            if (((latitude[i] > lat) != (latitude[j] > lat))
-                    && (lon < (longitude[j] - longitude[i])
-                            * (lat - latitude[i]) / (latitude[j] - latitude[i])
-                            + longitude[i])) {
+        for (int i = 0, j = ring.size() - 1; i < ring.size(); j = i++) {
+            final Point p_i = ring.get(i);
+            final Point p_j = ring.get(j);
+            if (((p_i.getLatitude() > lat) != (p_j.getLatitude() > lat))
+                    && (lon < (p_j.getLongitude() - p_i.getLongitude())
+                            * (lat - p_i.getLatitude())
+                            / (p_j.getLatitude() - p_i.getLatitude())
+                            + p_i.getLongitude())) {
                 contains = !contains;
             }
         }
         return contains;
-    }
-
-    @Override
-    public BoundingBox getBoundingBox() {
-        return boundingBox;
     }
 
 }

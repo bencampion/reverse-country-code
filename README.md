@@ -1,4 +1,4 @@
-#Reverse Country Code
+#Reverse Country Code [![Build Status](https://travis-ci.org/bencampion/reverse-country-code.svg?branch=master)](https://travis-ci.org/bencampion/reverse-country-code)
 
 Java library for converting latitude and longitude coordinates into ISO 3166-1 two letter country codes.
 

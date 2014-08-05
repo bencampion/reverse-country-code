@@ -2,11 +2,10 @@ package com.github.countrycode.reverse;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 class MultiPolygon implements Geometry {
 
-    private final List<Polygon> polygons;
+    private final Iterable<Polygon> polygons;
     private final BoundingBox boundingBox;
 
     public MultiPolygon(Collection<Polygon> polygons) {

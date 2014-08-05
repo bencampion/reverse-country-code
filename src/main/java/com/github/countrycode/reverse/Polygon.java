@@ -8,14 +8,14 @@ import java.util.List;
 class Polygon implements Geometry {
 
     private final List<Point> ring;
-    private final List<Polygon> holes;
+    private final Iterable<Polygon> holes;
     private final BoundingBox boundingBox;
 
-    public Polygon(List<Point> ring) {
+    public Polygon(Collection<Point> ring) {
         this(ring, Collections.<Polygon> emptyList());
     }
 
-    public Polygon(List<Point> ring, Collection<Polygon> holes) {
+    public Polygon(Collection<Point> ring, Collection<Polygon> holes) {
         this.ring = new ArrayList<>(ring);
         this.holes = new ArrayList<>(holes);
         boundingBox = new BoundingBox.Builder().addPoints(ring).build();

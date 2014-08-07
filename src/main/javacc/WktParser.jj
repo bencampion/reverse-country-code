@@ -41,24 +41,24 @@ MultiPolygon multiPolygon():
 
 Polygon polygon():
 {
-    List<Point> ring;
-    List<Polygon> holes = new ArrayList<Polygon>();
+    LinearRing ring;
+    List<LinearRing> holes = new ArrayList<LinearRing>();
 }
 {
-    "(" ring = ring() ( "," { holes.add(new Polygon(ring())); } )* ")"
+    "(" ring = ring() ( "," { holes.add(ring()); } )* ")"
     {
         return new Polygon(ring, holes);
     }
 }
 
-List<Point> ring():
+LinearRing ring():
 {
-    List<Point> coordinates = new ArrayList<Point>();
+    List<Point> points = new ArrayList<Point>();
 }
 {
-    "(" { coordinates.add(point()); } ( "," { coordinates.add(point()); } )* ")"
+    "(" { points.add(point()); } ( "," { points.add(point()); } )* ")"
     {
-        return coordinates;
+        return new LinearRing(points);
     }
 }
 

@@ -2,41 +2,54 @@ package com.github.countrycode.reverse;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
-import java.io.StringReader;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
+import com.google.common.collect.ImmutableList;
+
+@RunWith(MockitoJUnitRunner.class)
 public class MultiPolygonTest {
 
-    private Geometry polygon;
+    private MultiPolygon multiPolygon;
+    @Mock
+    private Polygon polygon1;
+    @Mock
+    private Polygon polygon2;
 
     @Before
-    public void setup() throws ParseException {
-        String wkt = "MULTIPOLYGON (((4 4, 2 4.5, 4.5 3, 4 4)), ((2 3.5, 4.5 2, 3 0.5, 1 1, 1 3, 2 3.5), (3 2, 2 2.5, 2 1.5, 3 2)))";
-        WktParser parser = new WktParser(new StringReader(wkt));
-        polygon = parser.parse();
+    public void setup() {
+        when(polygon1.contains(4, 3.5)).thenReturn(true);
+        when(polygon1.getBoundingBox()).thenReturn(
+                new BoundingBox(new Point(4.5, 4), new Point(2, 3)));
+        when(polygon2.contains(1, 3)).thenReturn(true);
+        when(polygon2.getBoundingBox()).thenReturn(
+                new BoundingBox(new Point(4.5, 3.5), new Point(1, 1)));
+        multiPolygon = new MultiPolygon(ImmutableList.of(polygon1, polygon2));
     }
 
     @Test
     public void in1() {
-        assertTrue(polygon.contains(4, 3.5));
+        assertTrue(multiPolygon.contains(4, 3.5));
     }
 
     @Test
     public void in2() {
-        assertTrue(polygon.contains(1, 3));
+        assertTrue(multiPolygon.contains(1, 3));
     }
 
     @Test
     public void out() {
-        assertFalse(polygon.contains(5, 1));
+        assertFalse(multiPolygon.contains(5, 1));
     }
 
     @Test
     public void hole() {
-        assertFalse(polygon.contains(2, 2.5));
+        assertFalse(multiPolygon.contains(2, 2.5));
     }
 
 }

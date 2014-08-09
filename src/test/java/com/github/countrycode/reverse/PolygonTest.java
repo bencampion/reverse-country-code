@@ -2,21 +2,31 @@ package com.github.countrycode.reverse;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
-import java.io.StringReader;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
+import com.google.common.collect.ImmutableList;
+
+@RunWith(MockitoJUnitRunner.class)
 public class PolygonTest {
 
-    private Geometry polygon;
+    private Polygon polygon;
+    @Mock
+    private LinearRing ring;
+    @Mock
+    private LinearRing hole;
 
     @Before
-    public void setup() throws ParseException {
-        String wkt = "POLYGON ((3.5 1, 1 2, 1.5 4, 4.5 4.5, 3.5 1), (2 3, 3.5 3.5, 3 2, 2 3))";
-        WktParser parser = new WktParser(new StringReader(wkt));
-        polygon = parser.parse();
+    public void setup() {
+        when(ring.contains(4, 3)).thenReturn(true);
+        when(ring.contains(3, 3)).thenReturn(true);
+        when(hole.contains(3, 3)).thenReturn(true);
+        polygon = new Polygon(ring, ImmutableList.of(hole));
     }
 
     @Test

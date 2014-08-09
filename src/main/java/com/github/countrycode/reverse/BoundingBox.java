@@ -2,21 +2,18 @@ package com.github.countrycode.reverse;
 
 class BoundingBox implements Geometry {
 
-    private final double north;
-    private final double south;
-    private final double east;
-    private final double west;
+    private final Point upper;
+    private final Point lower;
 
-    public BoundingBox(double north, double south, double east, double west) {
-        this.north = north;
-        this.south = south;
-        this.east = east;
-        this.west = west;
+    public BoundingBox(Point upper, Point lower) {
+        this.upper = upper;
+        this.lower = lower;
     }
 
     @Override
     public boolean contains(double lat, double lon) {
-        return lat <= north && lat >= south && lon <= east && lon >= west;
+        return lat <= upper.getLatitude() && lat >= lower.getLatitude()
+                && lon <= upper.getLongitude() && lon >= lower.getLongitude();
     }
 
     @Override
@@ -33,7 +30,7 @@ class BoundingBox implements Geometry {
 
         public Builder addPoints(Iterable<Point> points) {
             for (Point point : points) {
-                addPoint(point.getLatitude(), point.getLongitude());
+                addPoint(point);
             }
             return this;
         }
@@ -41,21 +38,22 @@ class BoundingBox implements Geometry {
         public Builder addGeometries(Iterable<? extends Geometry> geometries) {
             for (Geometry geometry : geometries) {
                 BoundingBox box = geometry.getBoundingBox();
-                addPoint(box.north, box.east);
-                addPoint(box.south, box.west);
+                addPoint(box.upper);
+                addPoint(box.lower);
             }
             return this;
         }
 
         public BoundingBox build() {
-            return new BoundingBox(north, south, east, west);
+            return new BoundingBox(new Point(north, east), new Point(south,
+                    west));
         }
 
-        private void addPoint(double lat, double lon) {
-            north = Math.max(lat, north);
-            south = Math.min(lat, south);
-            east = Math.max(lon, east);
-            west = Math.min(lon, west);
+        private void addPoint(Point point) {
+            north = Math.max(point.getLatitude(), north);
+            south = Math.min(point.getLatitude(), south);
+            east = Math.max(point.getLongitude(), east);
+            west = Math.min(point.getLongitude(), west);
         }
 
     }

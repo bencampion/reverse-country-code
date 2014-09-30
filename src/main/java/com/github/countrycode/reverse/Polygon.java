@@ -2,16 +2,11 @@ package com.github.countrycode.reverse;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
 class Polygon implements Geometry {
 
     private final LinearRing ring;
     private final Iterable<LinearRing> holes;
-
-    public Polygon(LinearRing ring) {
-        this(ring, Collections.<LinearRing> emptyList());
-    }
 
     public Polygon(LinearRing ring, Collection<LinearRing> holes) {
         this.ring = ring;

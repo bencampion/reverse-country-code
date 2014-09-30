@@ -58,6 +58,18 @@
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
         <version>0.7.1.201405082137</version>
+        <configuration>
+          <excludes>
+            <exclude>com/github/countrycode/reverse/SimpleCharStream.class</exclude>
+            <exclude>com/github/countrycode/reverse/WktParserTokenManager.class</exclude>
+            <exclude>com/github/countrycode/reverse/WktParser.class</exclude>
+            <exclude>com/github/countrycode/reverse/ParseException.class</exclude>
+            <exclude>com/github/countrycode/reverse/TokenMgrError.class</exclude>
+            <exclude>com/github/countrycode/reverse/Parser.class</exclude>
+            <exclude>com/github/countrycode/reverse/WktParserConstants.class</exclude>
+            <exclude>com/github/countrycode/reverse/Token.class</exclude>
+          </excludes>
+        </configuration>
         <executions>
           <execution>
             <id>prepare-agent</id>

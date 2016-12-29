@@ -1,32 +1,43 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github</groupId>
   <version>0.0.1-SNAPSHOT</version>
   <artifactId>reverse-country-code</artifactId>
   <name>reverse-country-code</name>
   <url>https://github.com/bencampion/reverse-country-code</url>
-  <description>Library for finding the two letter ISO country code (ISO 3166-1 alpha-2) for any given point in degrees latitude and longitude.</description>
+  <description>A reverse geocoder that converts latitude and longitude coordinates to information
+    about a country such as names, ISO codes and locales.
+  </description>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
   <dependencies>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.8.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>6.10</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <version>1.9.5</version>
+      <groupId>org.openjdk.jmh</groupId>
+      <artifactId>jmh-core</artifactId>
+      <version>1.17.3</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>15.0</version>
+      <groupId>org.openjdk.jmh</groupId>
+      <artifactId>jmh-generator-annprocess</artifactId>
+      <version>1.17.3</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -34,42 +45,63 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.1</version>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>2.19.1</version>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
+          <properties>
+            <property>
+              <name>usedefaultlisteners</name>
+              <value>false</value>
+            </property>
+          </properties>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>javacc-maven-plugin</artifactId>
-        <version>2.6</version>
         <executions>
           <execution>
-            <id>javacc</id>
             <goals>
-              <goal>javacc</goal>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.googlecode.maven-download-plugin</groupId>
+        <artifactId>download-maven-plugin</artifactId>
+        <version>1.2.1</version>
+        <configuration>
+          <skipCache>true</skipCache>
+          <overwrite>true</overwrite>
+        </configuration>
+        <executions>
+          <execution>
+            <id>countries</id>
+            <configuration>
+              <url>http://download.geonames.org/export/dump/countryInfo.txt</url>
+              <outputDirectory>${project.basedir}/src/main/resources</outputDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>shapes</id>
+            <configuration>
+              <url>http://download.geonames.org/export/dump/shapes_simplified_low.json.zip</url>
+              <outputDirectory>${project.basedir}/src/main/resources</outputDirectory>
+              <unpack>true</unpack>
+            </configuration>
+          </execution>
+          <execution>
+            <id>cities</id>
+            <configuration>
+              <url>http://download.geonames.org/export/dump/cities15000.zip</url>
+              <outputDirectory>${project.basedir}/src/test/resources</outputDirectory>
+              <unpack>true</unpack>
+            </configuration>
           </execution>
         </executions>
       </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.7.1.201405082137</version>
-        <configuration>
-          <excludes>
-            <exclude>com/github/countrycode/reverse/SimpleCharStream.class</exclude>
-            <exclude>com/github/countrycode/reverse/WktParserTokenManager.class</exclude>
-            <exclude>com/github/countrycode/reverse/WktParser.class</exclude>
-            <exclude>com/github/countrycode/reverse/ParseException.class</exclude>
-            <exclude>com/github/countrycode/reverse/TokenMgrError.class</exclude>
-            <exclude>com/github/countrycode/reverse/Parser.class</exclude>
-            <exclude>com/github/countrycode/reverse/WktParserConstants.class</exclude>
-            <exclude>com/github/countrycode/reverse/Token.class</exclude>
-          </excludes>
-        </configuration>
+        <version>0.7.8</version>
         <executions>
           <execution>
             <id>prepare-agent</id>
@@ -83,6 +115,35 @@
         <groupId>org.eluder.coveralls</groupId>
         <artifactId>coveralls-maven-plugin</artifactId>
         <version>2.2.0</version>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.5.0</version>
+        <executions>
+          <execution>
+            <id>benchmarks</id>
+            <configuration>
+              <executable>java</executable>
+              <classpathScope>test</classpathScope>
+              <arguments>
+                <argument>-classpath</argument>
+                <classpath/>
+                <argument>uk.recurse.geocoding.reverse.Benchmarks</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-baseline-cities</id>
+            <configuration>
+              <classpathScope>test</classpathScope>
+              <mainClass>uk.recurse.geocoding.reverse.ReverseGeocoderIT</mainClass>
+              <arguments>
+                <argument>${project.basedir}/src/test/resources</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

@@ -31,7 +31,7 @@ Country information and boundary data comes from [GeoNames](http://download.geon
 
 ## Performance
 
-~4 μs average to look up city from the GeoNames data set on a 13" MacBook Pro (i5-5257U) using a single thread. The retained heap usage for `ReverseGeocoder` is ~5.54 MB.
+~3 μs average to look up city from the GeoNames data set on a 13" MacBook Pro (i5-5257U) using a single thread. The retained heap size for `ReverseGeocoder` is ~7.5 MB.
 
 ## Algorithms
 

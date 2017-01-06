@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
+import java.util.stream.Stream;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 class Feature {
@@ -24,15 +25,11 @@ class Feature {
         this.geometry = geometry;
     }
 
-    boolean contains(float lat, float lon) {
-        return geometry.contains(lat, lon);
-    }
-
     Country country() {
         return country;
     }
 
-    Geometry geometry() {
-        return geometry;
+    Stream<Geometry> geometries() {
+        return geometry.flatten(country);
     }
 }

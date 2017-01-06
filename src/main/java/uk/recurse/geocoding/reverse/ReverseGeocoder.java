@@ -64,7 +64,7 @@ public class ReverseGeocoder {
      * @return the country at the given coordinate
      */
     public Optional<Country> getCountry(float lat, float lon) {
-        return Optional.ofNullable(featureCollection.getFeature(lat, lon)).map(Feature::country);
+        return Optional.ofNullable(featureCollection.getCountry(lat, lon));
     }
 
     /**
@@ -73,7 +73,7 @@ public class ReverseGeocoder {
      * @return stream of countries
      */
     public Stream<Country> countries() {
-        return featureCollection.stream().map(Feature::country);
+        return featureCollection.countries();
     }
 
 }

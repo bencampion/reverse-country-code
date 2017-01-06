@@ -29,12 +29,22 @@ class Ring implements Geometry {
     }
 
     @Override
+    public Country getCountry(float lat, float lon) {
+        return null;
+    }
+
+    @Override
     public BoundingBox boundingBox() {
         return boundingBox;
     }
 
+    @Override
+    public Stream<Geometry> flatten(Country country) {
+        return Stream.of(this);
+    }
+
     // algorithm notes: https://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
-    private boolean pnpoly(double lat, double lon) {
+    private boolean pnpoly(float lat, float lon) {
         boolean contains = false;
         for (int i = 0, j = latitude.length - 1; i < latitude.length; j = i++) {
             if (((latitude[i] > lat) != (latitude[j] > lat))

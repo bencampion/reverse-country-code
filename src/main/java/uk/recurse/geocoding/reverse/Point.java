@@ -14,7 +14,7 @@ class Point {
     private final float lon;
 
     @JsonCreator
-    Point(@JsonProperty("y") float lat, @JsonProperty("x")float lon) {
+    Point(@JsonProperty("y") float lat, @JsonProperty("x") float lon) {
         this.lat = lat;
         this.lon = lon;
     }

@@ -23,7 +23,7 @@ public class ReverseGeocoderIT {
     private ReverseGeocoder geocoder;
 
     @DataProvider
-    public Iterator<Object[]> cities() throws IOException {
+    public Iterator<Object[]> cities() {
         InputStream in = ReverseGeocoderIT.class.getResourceAsStream("/baselineCities.txt");
         return new BufferedReader(new InputStreamReader(in, UTF_8)).lines()
                 .map(line -> line.split("\t"))

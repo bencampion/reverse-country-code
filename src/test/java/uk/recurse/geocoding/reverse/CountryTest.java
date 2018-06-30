@@ -3,7 +3,6 @@ package uk.recurse.geocoding.reverse;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
 import java.io.StringReader;
 import java.util.Arrays;
 import java.util.List;
@@ -19,7 +18,7 @@ public class CountryTest {
     private Country uk;
 
     @BeforeClass
-    public void setup() throws IOException {
+    public void setup() {
         uk = Country.load(new StringReader(INPUT)).get("2635167");
     }
 

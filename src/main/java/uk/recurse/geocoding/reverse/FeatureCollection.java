@@ -14,7 +14,7 @@ class FeatureCollection {
 
     @JsonCreator
     FeatureCollection(@JsonProperty("features") Feature[] features) {
-        world = new MultiPolygon(Stream.of(features).flatMap(Feature::geometries));
+        world = SortTileRecursive.pack(Stream.of(features).flatMap(Feature::geometries));
         countries = Stream.of(features)
                 .map(Feature::country)
                 .toArray(Country[]::new);

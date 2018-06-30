@@ -2,12 +2,14 @@ package uk.recurse.geocoding.reverse;
 
 import java.io.BufferedReader;
 import java.io.Reader;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
@@ -35,7 +37,7 @@ public class Country {
         continent = row[8];
         locales = Stream.of(row[15].split(","))
                 .map(Locale::forLanguageTag)
-                .collect(toList());
+                .collect(collectingAndThen(toList(), Collections::unmodifiableList));
     }
 
     static Map<String, Country> load(Reader reader) {

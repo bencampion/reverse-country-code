@@ -28,11 +28,11 @@ class BoundingBox {
                 && lat >= min.latitude() && lon >= min.longitude();
     }
 
-    float latitude() {
+    float centroidLatitude() {
         return (max.latitude() + min.latitude()) / 2;
     }
 
-    float longitude() {
+    float centroidLongitude() {
         return (max.longitude() + min.longitude()) / 2;
     }
 

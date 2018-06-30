@@ -13,14 +13,12 @@ class Polygon implements Geometry {
 
     @JsonCreator
     Polygon(@JsonProperty("coordinates") Ring[] rings) {
-        ring = rings[0];
-        holes = new MultiPolygon(Stream.of(rings).skip(1));
-        country = null;
+        this(rings[0], SortTileRecursive.pack(Stream.of(rings).skip(1)), null);
     }
 
-    private Polygon(Polygon polygon, Country country) {
-        ring = polygon.ring;
-        holes = polygon.holes;
+    private Polygon(Ring ring, Geometry holes, Country country) {
+        this.ring = ring;
+        this.holes = holes;
         this.country = country;
     }
 
@@ -41,6 +39,6 @@ class Polygon implements Geometry {
 
     @Override
     public Stream<Geometry> flatten(Country country) {
-        return Stream.of(new Polygon(this, country));
+        return Stream.of(new Polygon(ring, holes, country));
     }
 }

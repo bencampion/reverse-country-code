@@ -13,7 +13,7 @@ class Ring implements Geometry {
     private final BoundingBox boundingBox;
 
     @JsonCreator
-    Ring(Point[] points) {
+    Ring(Point... points) {
         latitude = new float[points.length];
         longitude = new float[points.length];
         for (int i = 0; i < points.length; i++) {
@@ -30,7 +30,7 @@ class Ring implements Geometry {
 
     @Override
     public Country getCountry(float lat, float lon) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -40,7 +40,7 @@ class Ring implements Geometry {
 
     @Override
     public Stream<Geometry> flatten(Country country) {
-        return Stream.of(this);
+        throw new UnsupportedOperationException();
     }
 
     // algorithm notes: https://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html

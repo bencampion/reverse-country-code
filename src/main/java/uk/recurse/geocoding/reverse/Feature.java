@@ -19,7 +19,7 @@ class Feature {
             @JacksonInject Map<String, Country> countries,
             @JsonProperty("properties") Map<String, String> properties,
             @JsonProperty("geometry") Geometry geometry
-            ) {
+    ) {
         String id = properties.get("geoNameId");
         country = countries.get(id);
         this.geometry = geometry;

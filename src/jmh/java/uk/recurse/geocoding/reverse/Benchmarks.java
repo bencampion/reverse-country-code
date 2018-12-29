@@ -8,10 +8,6 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.infra.Blackhole;
-import org.openjdk.jmh.runner.Runner;
-import org.openjdk.jmh.runner.RunnerException;
-import org.openjdk.jmh.runner.options.Options;
-import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -45,7 +41,7 @@ public class Benchmarks {
     }
 
     private List<Point> cityPoints() throws IOException {
-        try (InputStream in = Benchmarks.class.getResourceAsStream("/baselineCities.txt")) {
+        try (InputStream in = Benchmarks.class.getResourceAsStream("/cities.tsv")) {
             return new BufferedReader(new InputStreamReader(in, UTF_8)).lines()
                     .map(line -> line.split("\t"))
                     .map(row -> {
@@ -81,15 +77,5 @@ public class Benchmarks {
         for (Point point : random) {
             bh.consume(geocoder.getCountry(point.latitude(), point.longitude()));
         }
-    }
-
-    public static void main(String[] args) throws RunnerException {
-        Options opt = new OptionsBuilder()
-                .include(Benchmarks.class.getSimpleName())
-                .warmupIterations(10)
-                .measurementIterations(50)
-                .forks(1)
-                .build();
-        new Runner(opt).run();
     }
 }

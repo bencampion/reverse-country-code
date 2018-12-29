@@ -37,20 +37,20 @@ Country information and boundary data comes from [GeoNames](http://download.geon
 
 Country bounding boxes are loaded into [R-Trees](https://en.wikipedia.org/wiki/R-tree) using the [Sort-Tile-Recursive](http://www.dtic.mil/dtic/tr/fulltext/u2/a324493.pdf) algorithm. Determining if a point lies within a polygon is performed using the [PNPOLY](http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html) algorithm.
 
-## Maven targets
+## Gradle tasks
 
 Build jar:
 
-    mvn clean package
+    ./gradlew assemble
 
 Download new Geonames data:
 
-    mvn download:wget@countries download:wget@shapes
+    ./gradlew updateCountryInfo updateShapes
 
 Run benchmarks:
 
-    mvn test-compile exec:exec@benchmarks
+    ./gradlew jmh
 
-Generate new baseline test data for benchmarks and integration tests:
+Generate new baseline test data:
 
-    mvn download:wget@cities test-compile exec:java@generate-baseline-cities
+    ./gradlew generateBaseline

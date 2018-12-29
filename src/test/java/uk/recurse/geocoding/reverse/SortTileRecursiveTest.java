@@ -1,49 +1,52 @@
 package uk.recurse.geocoding.reverse;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class SortTileRecursiveTest {
+class SortTileRecursiveTest {
 
     @Test
-    public void given16Rectangles_sortTileRecursiveReturnsSameInput() {
+    void given16Rectangles_sortTileRecursiveReturnsSameInput() {
         List<Geometry> rectangles = rectangles(16);
 
         List<Geometry> rTree = SortTileRecursive.pack(rectangles);
 
-        assertSame(rTree, rectangles);
+        assertSame(rectangles, rTree);
     }
 
     @Test
-    public void given17Rectangles_sortTileRecursiveReturnsTwoRectangles() {
+    void given17Rectangles_sortTileRecursiveReturnsTwoRectangles() {
         List<Geometry> rectangles = rectangles(17);
 
         List<Geometry> rTree = SortTileRecursive.pack(rectangles);
 
-        assertEquals(rTree.size(), 2);
-        assertEquals(rTree.get(0).boundingBox().centroidLatitude(), 4.0f);
-        assertEquals(rTree.get(0).boundingBox().centroidLongitude(), 4.0f);
-        assertEquals(rTree.get(1).boundingBox().centroidLatitude(), 12.5f);
-        assertEquals(rTree.get(1).boundingBox().centroidLongitude(), 12.5f);
+        assertAll(
+                () -> assertEquals(2, rTree.size()),
+                () -> assertEquals(4.0f, rTree.get(0).boundingBox().centroidLatitude()),
+                () -> assertEquals(4.0f, rTree.get(0).boundingBox().centroidLongitude()),
+                () -> assertEquals(12.5f, rTree.get(1).boundingBox().centroidLatitude()),
+                () -> assertEquals(12.5f, rTree.get(1).boundingBox().centroidLongitude())
+        );
     }
 
     @Test
-    public void given32Rectangles_sortTileRecursiveReturnsTwoRectangles() {
+    void given32Rectangles_sortTileRecursiveReturnsTwoRectangles() {
         List<Geometry> rectangles = rectangles(32);
 
         List<Geometry> rTree = SortTileRecursive.pack(rectangles);
 
-        assertEquals(rTree.size(), 2);
-        assertEquals(rTree.get(0).boundingBox().centroidLatitude(), 7.5f);
-        assertEquals(rTree.get(0).boundingBox().centroidLongitude(), 7.5f);
-        assertEquals(rTree.get(1).boundingBox().centroidLatitude(), 23.5f);
-        assertEquals(rTree.get(1).boundingBox().centroidLongitude(), 23.5f);
+        assertAll(
+                () -> assertEquals(2, rTree.size()),
+                () -> assertEquals(7.5f, rTree.get(0).boundingBox().centroidLatitude()),
+                () -> assertEquals(7.5f, rTree.get(0).boundingBox().centroidLongitude()),
+                () -> assertEquals(23.5f, rTree.get(1).boundingBox().centroidLatitude()),
+                () -> assertEquals(23.5f, rTree.get(1).boundingBox().centroidLongitude())
+        );
     }
 
     private List<Geometry> rectangles(int n) {

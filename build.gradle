@@ -16,11 +16,13 @@ repositories {
 
 dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.8.1'
-    testImplementation 'org.testng:testng:6.10'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.5.1'
+    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.5.1'
 }
 
 test {
-    useTestNG()
+    useJUnitPlatform()
 }
 
 jacocoTestReport {

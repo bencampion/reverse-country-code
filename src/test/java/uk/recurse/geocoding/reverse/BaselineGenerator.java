@@ -22,7 +22,7 @@ public class BaselineGenerator {
         int fail = 0;
         try (
                 InputStream in = new URL("https://download.geonames.org/export/dump/cities15000.zip").openStream();
-                Writer baseline = Files.newBufferedWriter(Paths.get(args[0], "baselineCities.txt"))
+                Writer baseline = Files.newBufferedWriter(Paths.get(args[0], "baselineCities.csv"))
         ) {
             ZipInputStream zipStream = new ZipInputStream(in);
             zipStream.getNextEntry();
@@ -35,7 +35,7 @@ public class BaselineGenerator {
                 String iso = row[8];
                 Optional<String> output = geocoder.getCountry(lat, lon).map(Country::iso);
                 if (output.filter(iso::equals).isPresent()) {
-                    baseline.write(String.join("\t", row[4], row[5], output.get()));
+                    baseline.write(String.join(",", row[4], row[5], output.get()));
                     baseline.write('\n');
                     pass++;
                 } else {

@@ -1,4 +1,4 @@
-# Reverse Country Code [![Build Status](https://travis-ci.org/bencampion/reverse-country-code.svg?branch=master)](https://travis-ci.org/bencampion/reverse-country-code) [![Coverage Status](https://img.shields.io/coveralls/bencampion/reverse-country-code.svg)](https://coveralls.io/r/bencampion/reverse-country-code?branch=master)
+# Reverse Country Code [![Build Status](https://travis-ci.org/bencampion/reverse-country-code.svg?branch=master)](https://travis-ci.org/bencampion/reverse-country-code) [![Coverage Status](https://img.shields.io/coveralls/bencampion/reverse-country-code.svg)](https://coveralls.io/r/bencampion/reverse-country-code?branch=master) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/uk.recurse/reverse-country-code/badge.svg)](https://maven-badges.herokuapp.com/maven-central/uk.recurse/reverse-country-code)
 
 A reverse geocoder that converts latitude and longitude coordinates to country information such as names, ISO codes and locales.
 

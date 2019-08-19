@@ -1,13 +1,15 @@
 plugins {
     id 'jacoco'
     id 'java'
+    id 'maven-publish'
+    id 'signing'
     id 'de.undercouch.download' version '4.0.0'
     id 'com.github.kt3k.coveralls' version '2.8.4'
     id 'me.champeau.gradle.jmh' version '0.4.8'
+    id 'net.researchgate.release' version '2.6.0'
 }
 
 group = 'uk.recurse'
-version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
 repositories {
@@ -58,3 +60,61 @@ task updateShapes(dependsOn: downloadShapes, type: Copy) {
     from zipTree(downloadShapes.dest)
     into "${projectDir}/src/main/resources"
 }
+
+task sourcesJar(type: Jar) {
+    archiveClassifier = 'sources'
+    from sourceSets.main.allJava
+}
+
+task javadocJar(type: Jar) {
+    archiveClassifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            pom {
+                name = 'Reverse Country Code'
+                description = 'Reverse geocoder that converts latitude and longitude coordinates to ISO country codes.'
+                url = 'https://github.com/bencampion/reverse-country-code'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        name = 'Ben Campion'
+                        url = 'https://github.com/bencampion'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/bencampion/reverse-country-code.git'
+                    developerConnection = 'scm:git:git://github.com/bencampion/reverse-country-code.git'
+                    url = 'git@github.com:bencampion/reverse-country-code.git'
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            url = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+            credentials {
+                username = ossrhUsername
+                password = ossrhPassword
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
+}
+
+afterReleaseBuild.dependsOn publish
